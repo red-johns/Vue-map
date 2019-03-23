@@ -1,29 +1,90 @@
 <template>
-  <div class="demo">
-    <elt-esri-map :mapConfig="mapConfig" @loaded="loadedHandler">
-      <elt-esri-map-popup slot="popup" :mapPoint="mapPoint">
-        <!-- 内部内容自定义 -->
-        <!-- 最外层只能有一个dom -->
-        <div>
-          <button @click="hidePopup">
-            <p>点击隐藏popup</p>
-            <i>地图尺寸过小时，popup会居中显示在底部</i>
-            <i>这一行为由arcgis控制</i>
-          </button>
-        </div>
-      </elt-esri-map-popup>
-    </elt-esri-map>
-  </div>
+  <el-row class="tac">
+    <el-col :span="3">
+      <el-menu
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+        :default-active="activedName"
+      >
+        <el-menu-item
+          v-for="(item,index) in selectorConfig"
+          :key="index"
+          :index="item.title"
+          @click="handleMenuSelect(item,index)"
+        >
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span>{{ item.title }}</span>
+          </template>
+        </el-menu-item>
+      </el-menu>
+    </el-col>
+    <el-col :span="21">
+      <elt-esri-map :mapConfig="mapConfig" @loaded="loadedHandler">
+        <elt-selector-bar
+          slot="selector"
+          :tabs="tabs"
+          :activeName="activedName"
+          @tab-change="tabChange"
+          @buttons-click="btnsClick"
+          v-model="result"
+        ></elt-selector-bar>
+        <elt-esri-map-popup slot="popup" :mapPoint="mapPoint" :custom="custom">
+          <!-- 内部内容自定义 -->
+          <!-- 最外层只能有一个dom -->
+          <div>
+            <button @click="custom = !custom">自定义切换</button>
+            <button @click="hidePopup">
+              <p>点击隐藏popup</p>
+              <i>地图尺寸过小时，popup会居中显示在底部</i>
+              <i>这一行为由arcgis控制</i>
+            </button>
+          </div>
+        </elt-esri-map-popup>
+      </elt-esri-map>
+      <div style="position: absolute;top: 150px;left: 500px;width:auto;height:auto;">
+        <button v-on:click="showLegendListFun">打开图例列表</button>
+        <button v-on:click="hideLegendListFun">关闭图例列表</button>
+        <br>
+        <button v-on:click="addPointFun">添加点图层</button>
+        <button v-on:click="pointShowFun">显示点图层</button>
+        <button v-on:click="pointNotShowFun">隐藏点图层和图例</button>
+        <button v-on:click="selectPointLegend">打开点图层图例</button>
+        <button v-on:click="cleanPoint">清除点图层和图例</button>
+        <br>
+        <br>
+        <button v-on:click="addMianFun">添加面图层</button>
+        <button v-on:click="mianShowFun">显示面图层</button>
+        <button v-on:click="mianNotShowFun">隐藏面图层和图例</button>
+        <button v-on:click="selectMianLegend">打开面图层图例</button>
+        <button v-on:click="cleanMian">清除面图层和图例</button>
+        <br>
+        <br>
+        <button v-on:click="addXianFun">添加线图层</button>
+        <button v-on:click="xianShowFun">显示线图层</button>
+        <button v-on:click="xianNotShowFun">隐藏线图层和图例</button>
+        <button v-on:click="selectXianLegend">打开线图层图例</button>
+        <button v-on:click="cleanXian">清除线图层和图例</button>
+        <br>
+        <br>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
 import data from "./test.json";
 // 导入地图配置
 import mapConfig from "./mapConfig.js";
+// selector 配置文件
+import selectorConfig from "./selectorConfig.js";
+
 export default {
   data() {
     return {
       mapPoint: null,
+      custom: true,
       //点图层数据
       pointList: [
         {
@@ -49,8 +110,11 @@ export default {
       ],
       //点图标样式
       poinLayerStyle: {
+        title: "123", //图例的等级信息，没有就不会显示图例
+        groupByName: "行政区划", //用于图例的分组，没有就不会显示图例
         //图片打点
-        imageUrl: "http://pic27.nipic.com/20130225/4746571_081826094000_2.jpg", //选择图片打点imageUrl不能为空，反之image不需要定义
+        imageUrl:
+          "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1552639720374&di=b48a1f1666bf95cc69dd10fbc5e8d5bb&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F02%2F04%2F64%2F045762e39b4cdfc.jpg", //选择图片打点imageUrl不能为空，反之image不需要定义
         width: 8, //图片宽度
         height: 11, //图片高度
         xoffset: 0, //图片x轴偏移
@@ -59,22 +123,14 @@ export default {
         // symbolStyle: "circle",
         // width: 12,
         // symbolLineStyle: "",
-        // symbolLineColor: {
-        //   r: 255,
-        //   g: 153,
-        //   b: 0
-        // },
+        // symbolLineColor: "black",
         // symbolLineWidth: 4,
-        // symbolColor: {
-        //   r: 255,
-        //   g: 0,
-        //   b: 0
-        // }
+        // color: "black"
       },
       //点名称样式
       poinNameLayerStyle: {
         type: "text", // autocasts as new TextSymbol()
-        color: "#000000",
+        color: "blue",
         haloColor: "black",
         haloSize: "1px",
         xoffset: 20,
@@ -88,13 +144,14 @@ export default {
       },
       //点描述样式
       poinDescribeLayerStyle: {
-        type: "text", 
+        type: "text", // autocasts as new TextSymbol()
         color: "#000000",
-        haloColor: "black",
+        haloColor: "blue",
         haloSize: "1px",
         xoffset: 24,
         yoffset: -8,
         font: {
+          // autocast as new Font()
           size: 10,
           family: "sans-serif",
           weight: "normal"
@@ -102,17 +159,16 @@ export default {
       },
       //线图标样式
       polylineLayerStyle: {
-        //颜色等级
-        levelNotShow: "-999", //等级为-999是不绘制面
+        title: "369",
+        groupByName: "流域河流",
+        levelNotShow: "-999", //等级为-999是不绘制线
         polylineStyle: {
           type: "polyline",
           rings: [],
           spatialReference: 4326
         },
-        lineSymbol: {
-          color: [114, 0, 0, 0.75],
-          width: 2
-        }
+        color: "#000000",
+        width: 2
       },
       //线描述样式
       polylineLevelLayerStyle: {
@@ -132,31 +188,37 @@ export default {
       },
       //面图标样式
       polygonLayerStyle: {
+        groupByName: "水利工程",
         //颜色等级
         level: [
           {
             levelName: "10",
-            levelColor: [57, 167, 6, 0.75]
+            title: "10-25",
+            levelColor: "#000FF0"
           },
           {
             levelName: "25",
-            levelColor: [96, 185, 254, 0.75]
+            title: "25-50",
+            levelColor: "#000000"
           },
           {
             levelName: "50",
-            levelColor: [0, 0, 255, 0.75]
+            title: "50-100",
+            levelColor: "#FF0000"
           },
           {
             levelName: "100",
-            levelColor: [250, 0, 250, 0.75]
+            title: "100-250",
+            levelColor: "#0000FF"
           },
           {
             levelName: "250",
-            levelColor: [114, 0, 0, 0.75]
+            title: "大于250",
+            levelColor: "#00FF00"
           }
         ],
         levelNotShow: "-999", //等级为-999是不绘制面
-        levelDefultColor: [166, 242, 142, 0.75], //默认显示的颜色
+        levelDefultColor: "#0FFF00", //默认显示的颜色
         polygonStyle: {
           type: "polygon",
           rings: [],
@@ -172,10 +234,45 @@ export default {
       },
       polylineList: data.PathList, //线图层数据
       polygonList: data.PathList, //面图层数据
-      mapConfig: mapConfig
+      mapConfig: mapConfig,
+      index: 0,
+      selectorConfig: selectorConfig,
+      activedName: selectorConfig[0].title,
+      tabs: [],
+      result: null
     };
   },
   methods: {
+    handleMenuSelect(obj, index) {
+      this.activedName = obj.title;
+      if (!this.tabs.includes(obj)) {
+        this.tabs.push(obj);
+      }
+    },
+    tabChange(tabName) {
+      this.activedName = tabName;
+    },
+    btnsClick(name) {
+      switch (name) {
+        case "per":
+          alert("上一页按钮");
+          break;
+        case "next":
+          alert("下一页按钮");
+          break;
+        case "dataTable":
+          alert("数据列表按钮");
+          break;
+        case "search":
+          alert("查询按钮");
+          break;
+        case "btnTest":
+          alert("测试按钮");
+          break;
+      }
+
+      console.log(this.result);
+    },
     loadedHandler(elitelMap) {
       this.elitelMap = elitelMap;
       this.elitelMap.map;
@@ -200,37 +297,41 @@ export default {
               responses.results[0].graphic.attributes.data !== undefined
             ) {
               _this.mapPoint = event.mapPoint;
+            } else {
+              _this.mapPoint = null;
             }
           });
       });
-
-    
       this.init();
     },
     init() {
-      //创建点图层并打点
+      //添加点图标
       this.elitelMap.CreateGraphicsLayer(
         "GraphicsLayer",
         "PictureMarkerSymbol",
         this.pointList,
         this.poinLayerStyle,
         true,
-        { id: "id_点图标", title: "点图标" }
+        { id: "id_icon_river_station", title: "河道水文站" }
       );
-      //清空图层
-      // this.elitelMap.CleanLayer("id_点图标");
 
-      //创建点名称图层并显示名称
       this.elitelMap.CreateGraphicsLayer(
         "GraphicsLayer",
         "TextSymbol",
         this.pointList,
         this.poinNameLayerStyle,
         true,
-        { id: "id_点名称", title: "点名称" }
+        { id: "id_name_river_station", title: "河道水文站" }
       );
 
-      //初始化线和面的数据
+      this.elitelMap.CreateGraphicsLayer(
+        "GraphicsLayer",
+        "TextSymbol",
+        this.pointList,
+        this.poinDescribeLayerStyle,
+        true,
+        { id: "id_desc_river_station", title: "河道水文站" }
+      );
       let data = new Array();
       for (let t = 0; t < this.polylineList.length; t++) {
         let coors = this.polylineList[t].Path.split("|");
@@ -252,49 +353,135 @@ export default {
           coors: coorsArray
         });
       }
+      this.data = data;
 
-      //创建线图标图层并显示线
-      this.elitelMap.CreateGraphicsLayer(
-        "GraphicsLayer",
-        "Polyline",
-        data,
-        this.polylineLayerStyle,
-        true,
-        { id: "id_线图标", title: "线图标" }
-      );
-
-      //创建线描述图层并显示描述
       this.elitelMap.CreateGraphicsLayer(
         "GraphicsLayer",
         "polylineDescribe",
-        data,
+        this.data,
         this.polylineLevelLayerStyle,
         true,
-        { id: "id_线描述", title: "线描述" }
-      );
-
-      //创建面图标图层并显示面
-      this.elitelMap.CreateGraphicsLayer(
-        "GraphicsLayer",
-        "Polygon",
-        data,
-        this.polygonLayerStyle,
-        true,
-        { id: "id_面图标", title: "面图标" }
+        { id: "id_desc_dyke_water", title: "堤防" }
       );
     },
     hidePopup() {
       this.mapPoint = null;
+    },
+    addPointFun() {
+      this.elitelMap.CreateGraphicsLayer(
+        "GraphicsLayer",
+        "PictureMarkerSymbol",
+        [],
+        {
+          title: "456", //图例的等级信息，没有就不会显示图例
+          groupByName: "行政区划", //用于图例的分组，没有就不会显示图例
+          //图片打点
+          // imageUrl:
+          //   "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1552639720374&di=b48a1f1666bf95cc69dd10fbc5e8d5bb&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F02%2F04%2F64%2F045762e39b4cdfc.jpg", //选择图片打点imageUrl不能为空，反之image不需要定义
+          // width: 8, //图片宽度
+          // height: 11, //图片高度
+          // xoffset: 0, //图片x轴偏移
+          // yoffset: 0 //图片y轴偏移
+          //普通打点
+          symbolStyle: "circle",
+          width: 12,
+          symbolLineStyle: "",
+          symbolLineColor: "black",
+          symbolLineWidth: 4,
+          color: "black"
+        },
+        true,
+        { id: "id_icon_river_station", title: "河道水文站" }
+      );
+    },
+    pointShowFun() {
+      //输入图层id,隐藏图层会将当前图层的图例隐藏
+      this.elitelMap.setLayerVisibleFun("id_icon_river_station", true);
+    },
+    selectPointLegend() {
+      //输入图层id,选择需要显示的图例
+      this.elitelMap.selectLegend("id_icon_river_station");
+    },
+    cleanPoint() {
+      //输入图层id,清除图层图例也会清空
+      this.elitelMap.CleanLayer("id_icon_river_station");
+    },
+    addMianFun() {
+      this.elitelMap.CreateGraphicsLayer(
+        "GraphicsLayer",
+        "Polygon",
+        this.data,
+        this.polygonLayerStyle,
+        true,
+        { id: "id_icon_one_river", title: "一级河流" }
+      );
+    },
+    mianShowFun() {
+      //输入图层id,隐藏图层会将当前图层的图例隐藏
+      this.elitelMap.setLayerVisibleFun("id_icon_one_river", true);
+    },
+    selectMianLegend() {
+      //输入图层id,选择需要显示的图例
+      this.elitelMap.selectLegend("id_icon_one_river");
+    },
+    cleanMian() {
+      //输入图层id,清除图层图例也会清空
+      this.elitelMap.CleanLayer("id_icon_one_river");
+    },
+    xianShowFun() {
+      //输入图层id,隐藏图层会将当前图层的图例隐藏
+      this.elitelMap.setLayerVisibleFun("id_icon_dyke_water", true);
+    },
+    selectXianLegend() {
+      //输入图层id,选择需要显示的图例
+      this.elitelMap.selectLegend("id_icon_dyke_water");
+    },
+    cleanXian() {
+      //输入图层id,清除图层图例也会清空
+      this.elitelMap.CleanLayer("id_icon_dyke_water");
+    },
+    pointNotShowFun() {
+      //输入图层id,隐藏图层会将当前图层的图例隐藏
+      this.elitelMap.setLayerVisibleFun("id_icon_river_station", false);
+    },
+    mianNotShowFun() {
+      //输入图层id,隐藏图层会将当前图层的图例隐藏
+      this.elitelMap.setLayerVisibleFun("id_icon_one_river", false);
+    },
+    xianNotShowFun() {
+      //输入图层id,隐藏图层会将当前图层的图例隐藏
+      this.elitelMap.setLayerVisibleFun("id_icon_dyke_water", false);
+    },
+    addXianFun() {
+      this.elitelMap.CreateGraphicsLayer(
+        "GraphicsLayer",
+        "Polyline",
+        this.data,
+        this.polylineLayerStyle,
+        true,
+        { id: "id_icon_dyke_water", title: "堤防" }
+      );
+    },
+    showLegendListFun() {
+      this.elitelMap.showLegendList();
+    },
+    hideLegendListFun() {
+      this.elitelMap.hideLegendList();
     }
   },
-  mounted() {}
+  created() {
+    this.tabs.push(this.selectorConfig[0]);
+  }
 };
 </script>
 
+
 <style>
-.demo,
-.demo > div {
-  width: 100%;
+.tac {
+  height: 100%;
+}
+.el-col,
+.el-menu {
   height: 100%;
 }
 </style>
