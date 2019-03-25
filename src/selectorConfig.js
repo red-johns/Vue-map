@@ -1,7 +1,7 @@
 export default [
   {
     title: '水库水位',
-    datepicker: '2019-03-21 8:00:00',
+    datepicker: '2019-03-22 00:00:00',
     buttons: [
       {
         label: '上一页',
@@ -67,6 +67,7 @@ export default [
       }
     ]
   },
+
   {
     title: '水库流量',
     datepicker: '2019-03-22',
@@ -98,6 +99,14 @@ export default [
             value: '1year',
             dateType: 'year',
             dateFormat: 'yyyy'
+          },
+          {
+            label: '自定义',
+            value: 'defined',
+            startTime: '2019-3-25',
+            endTime: '2019-3-27',
+            dateType: 'daterange',
+            dateFormat: 'yyyy-MM-dd'
           }
         ]
       },
