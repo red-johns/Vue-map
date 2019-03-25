@@ -1,6 +1,3 @@
-# 0.3.30
-
-
 > elitel components with vue
 
 ## Build Setup
