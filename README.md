@@ -1,4 +1,5 @@
-# 0.0.1
+# 0.3.30
+
 
 > elitel components with vue
 
@@ -6,6 +7,11 @@
 
 ```bash
 npm set registry http://192.168.0.139:4873
+```
+
+```bash
+# Demo源码地址
+git clone https://github.com/red-johns/Vue-map
 ```
 
 ``` bash
@@ -28,6 +34,7 @@ npm install @elitel/elt-esri-map --save
 ```
 import Vue from 'vue'
 import EltUI from '@elitel/elt-esri-map'
+import '@elitel/elt-esri-map/dist/main.css';
 Vue.use(EltUI)
 ```
 
@@ -57,6 +64,7 @@ import { EltEsriMap, EltEsriMapPopup } from '@elitel/elt-esri-map';
 
 需在html中引入所用版本arcgis`"https://js.arcgis.com/4.6/"`
 需在html中引入所用版本arcgis的css文件`"https://js.arcgis.com/4.6/esri/css/main.css"`
+需要先引入element-ui
 
 组件内使用：
 import { EltEsriMap } from 'elt-esri-map'
@@ -137,15 +145,19 @@ export default {
  * initVisible 指初始化时是否可见
  *
  */
-    Widgets: [
-        {component: "Compass", position: "top-left", index: 0, initVisible: true},
-        {component: "Home", position: "top-left", index: 1, initVisible: true},
-        {component: "LayerList", position: "top-right", index: 2, initVisible: true},
-        {component: "Legend", position: "top-right", index: 3, initVisible: true},
-        {component: "ScaleBar", position: "bottom-left", index: 4, initVisible: false},
-        {component: "Search", position: "bottom-right", index: 5, initVisible: false},
-        {component: "Zoom", position: "top-left", index: 0, initVisible: false}
+    MapWidgets: [
+      { component: 'ZoomIn', initVisible: true },//放大
+      { component: 'ZoomOut', initVisible: true },//缩小
+      { component: 'Drag', initVisible: true },//可以拖动地图
+      { component: 'PointPopup', initVisible: true },//点击任意点显示经纬度
+      { component: 'Home', initVisible: true },//显示全图
+      { component: 'ClearLabel', initVisible: true },//清除标注
+      { component: 'Measure', initVisible: true },//测距测面
+      { component: 'Position', initVisible: true },//输入经纬度定位
+      { component: 'LayerSelect', initVisible: true },//图层选择
+      { component: 'BaseLayerList', initVisible: true },//地图列表
     ]
+
 }
 
 
@@ -170,10 +182,22 @@ export default {
       elitelMap.CreateGraphicsLayer(layerType,symbolType,data,layerStyle,isvisible,layerParam);
 
       /**
-       * 清空图层
+       * 清空图层和当前图层的图例
        * @param layerID 传入图层的id
        */
       elitelMap.CleanLayer(layerID);
+
+      /**
+       * 选择需要显示的图例
+       * @param layerID 传入图层的id
+       */
+      this.elitelMap.selectLegend(layerID);
+
+      /**
+       * 隐藏图层会将当前图层的图例隐藏
+       * @param layerID 传入图层的id
+       */
+      this.elitelMap.setLayerVisibleFun(layerID);
 ```
 ## EsriMapPopup
 EsriMap组件内popup弹窗
@@ -225,3 +249,109 @@ this.elitelMap.view.on("click", function(event) {
           });
       });
 ```
+
+## EltSelectorBar
+
+EsriMap组件内 Selector Bar
+
+```
+<elt-esri-map>
+  <elt-selector-bar slot="selector">
+  </elt-selector-bar>
+</elt-esri-map>
+```
+
+放在EsriMap组件内，添加slot="selector"属性， **样式依赖 element-ui，需要先安装 element-ui**。
+
+### 参数配置
+
+- tabs 参数，用于配置 Selector Bar 显示内容
+
+```json
+{
+    title: '水库水位',
+    datepicker: '2019-03-21 8:00:00',
+    buttons: [
+      {
+        label: '上一页',
+        name: 'per'
+      },
+      {
+        label: '下一页',
+        name: 'next'
+      },
+      {
+        label: '数据列表',
+        name: 'dataTable'
+      }
+    ],
+    selects: [
+      {
+        name: 'test',
+        checked: 0,
+        options: [
+          {
+            label: '1小时',
+            value: '1h',
+            dateType: 'datetime',
+            dateFormat: 'yyyy-MM-dd HH:00:00'
+          },
+          {
+            label: '3小时',
+            value: '3h',
+            dateType: 'datetime',
+            dateFormat: 'yyyy-MM-dd HH:00:00'
+          },
+          {
+            label: '6小时',
+            value: '6h',
+            dateType: 'datetime',
+            dateFormat: 'yyyy-MM-dd HH:00:00'
+          },
+          {
+            label: '日雨量',
+            value: '1day',
+            dateType: 'date',
+            dateFormat: 'yyyy-MM-dd'
+          },
+          {
+            label: '月雨量',
+            value: '1month',
+            dateType: 'month',
+            dateFormat: 'yyyy-MM'
+          },
+          {
+            label: '年雨量',
+            value: '1year',
+            dateType: 'year',
+            dateFormat: 'yyyy'
+          },
+          {
+            label: '自定义',
+            value: 'defined',
+            dateType: 'daterange',
+            dateFormat: 'yyyy-MM-dd'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- activeName
+
+默认 `tab`  选项，要与 `tabs` 配置中的 `title` 配置相同
+
+
+### 回调事件
+
+- @tab-change
+
+当 `tab` 选项更改后触发，返回当前激活的 `tabName`，与 `tabs` 配置中的 `title` 配置相同。
+
+- @buttons-click
+
+按钮点击事件，返回点击按钮的 `name` ，与 `tabs` 配置中的 `buttons name` 配置相同。
+
+组件支持 `v-model` 获取 `Selector Bar` 中的结果值。
