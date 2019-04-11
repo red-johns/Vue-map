@@ -14,7 +14,7 @@
         </div>
       </elt-esri-map-popup>
     </elt-esri-map>
-    <div style="position: absolute;top: 70px;left: 25px;width:auto;height:auto;">
+    <div style="position: absolute;top: 70px;left: 220px;width:auto;height:auto;">
       <button v-on:click="showLegendListFun">打开图例列表</button>
       <button v-on:click="hideLegendListFun">关闭图例列表</button>
       <br>

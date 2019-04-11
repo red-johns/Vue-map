@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import App from './App.vue'
+import App from './MainApp.vue'
+import router from './router'
 
 import EltUI from '@elitel/elt-esri-map'
 import '@elitel/elt-esri-map/dist/main.css'
@@ -17,4 +18,5 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  router
 }).$mount('#app')
