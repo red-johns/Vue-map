@@ -105,6 +105,7 @@ import { EltEsriMap } from 'elt-esri-map'
  * 全部可配置项有：id、title、layerType、initVisible、restURL，相同配置项与BaseMapLayers含义相同，所有项都要配置
  * 其中layerType不能更改，必须为ElevationLayer，基本可配置项根据需要设置
  *
+ *
  * BusinessLayers 为用户业务图层，由用户根据实际业务需求，在地图初始化时，由用户配置需要加载到地图上的图层，
  * 全部可配置项有：id、title、layerType、initVisible、opacity、minScale: 30000000, maxScale: 1000，
  * layerType 可取值与CustomerLayers相同，由用户根据图层类型，配置相关项
