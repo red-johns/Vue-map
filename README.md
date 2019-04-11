@@ -352,3 +352,278 @@ EsriMap组件内 Selector Bar
 按钮点击事件，返回点击按钮的 `name` ，与 `tabs` 配置中的 `buttons name` 配置相同。
 
 组件支持 `v-model` 获取 `Selector Bar` 中的结果值。
+
+## SLT
+EsriMap组件内 使用SLT组件
+
+```
+<elt-esri-map>
+  <SLT 
+      slot="slt"
+      :SLTData="SLTData"
+      v-on:listenLeftOneChange="leftOneChange"
+      v-on:listenSearchClick="searchClick"
+      v-on:listenTabsClick="tabsClick"
+      v-on:listenRightImgClick="rightImgClick"
+      v-on:listenTableRowClick="tableRowClick"
+      v-on:listenIconClick="iconClick"/>
+</elt-esri-map>
+```
+放在EsriMap组件内，添加slot="slt"属性， **样式依赖 element-ui，需要先安装 element-ui**。
+
+- SLTData 参数，用于配置 SLT 显示内容 
+- SLTData实例
+```json
+SLTData:{
+        //左侧第一个下拉列表数据
+        LeftoptionsOne: [{
+                value: '1',
+                label: '北京'
+                }, {
+                value: '2',
+                label: '上海'
+                }, {
+                value: '3',
+                label: '河北'
+            }],
+        //右侧数据从配置文件中读取，配置文件请看下面实例SLTConfig.js配置文件
+        InitData:InitData,
+        //左侧第二个下拉列表数据
+        LeftoptionsTwo: [],
+        //右侧表格的数据
+        rightTableData:[]
+      }
+```
+- 实例：SLTConfig.js配置文件
+```json
+export default [
+    
+    {
+      title:"用户管理",
+      code:"first",
+      context:[
+           {
+              imgsrc:require('./assets/sltimg/xhry.png'),
+              imgname:"巡河人员",
+              imgcode:"xhry",
+              iconShow:false,
+              tableField:[
+                  {
+                      prop:"name",
+                      label:"姓名",
+                      width:"98",
+                      headalign:"center",
+                      align:"center"
+                  },{
+                      prop:"age",
+                      label:"年龄",
+                      width:"75",
+                      headalign:"center",
+                      align:"center"
+                  },{
+                      prop:"sex",
+                      label:"性别",
+                      width:"75",
+                      headalign:"center",
+                      align:"center"
+                  },{
+                      prop:"native",
+                      label:"籍贯",
+                      width:"77",
+                      headalign:"center",
+                      align:"center"
+                  }
+              ]
+          },{
+              imgsrc:require('./assets/sltimg/xhsj.png'),
+              imgname:"巡河事件",
+              imgcode:"xhsj",
+              iconShow:false,
+              tableField:[
+                    {
+                        prop:"name",
+                        label:"姓名",
+                        width:"75",
+                        headalign:"center",
+                        align:"center"
+                    }
+                ]
+          },{
+              imgsrc:require('./assets/sltimg/gzjb.png'),
+              imgname:"公众举报",
+              imgcode:"gzjb",
+              iconShow:false,
+              tableField:[]
+          },{
+              imgsrc:require('./assets/sltimg/gzjb.png'),
+              imgname:"测试信息",
+              imgcode:"csxx",
+              iconShow:false,
+              tableField:[]
+          },{
+              imgsrc:require('./assets/sltimg/gzjb.png'),
+              imgname:"测试内容",
+              imgcode:"csnr",
+              iconShow:false,
+              tableField:[]
+          },{
+              imgsrc:require('./assets/sltimg/gzjb.png'),
+              imgname:"测试结果",
+              imgcode:"cejg",
+              iconShow:false,
+              tableField:[]
+          }
+      ]
+  },{
+      title:"配置管理",
+      code:"second",
+      context:[
+        {
+            imgsrc:require('./assets/sltimg/xhry.png'),
+            imgname:"巡河信息",
+            imgcode:"xhxx",
+            iconShow:false,
+            tableField:[
+                {
+                    prop:"name",
+                    label:"姓名",
+                    width:"65",
+                    align:"center"
+                },{
+                    prop:"age",
+                    label:"年龄",
+                    width:"65",
+                    align:"center"
+                }
+            ]
+        }
+      ]
+  },{
+      title:"角色管理",
+      code:"third",
+      context:[]
+  },{
+      title:"信息管理",
+      code:"four",
+      context:[]
+  },{
+      title:"内容管理",
+      code:"five",
+      context:[]
+  },{
+      title:"测试内容",
+      code:"six",
+      context:[]
+  },{
+      title:"我的管理",
+      code:"seven",
+      context:[]
+  },{
+      title:"它的管理",
+      code:"engin",
+      context:[]
+  }
+
+]
+```
+
+### 回调事件
+- listenLeftOneChange
+
+左侧第一个下拉列表change事件,参数 `LeftOnevalue` 是当前选中的值; 该事件用于通过第一个下拉列表value的值绑定第二个下拉列表。例如：
+```
+leftOneChange(LeftOnevalue){
+      
+    }
+```
+
+- listenSearchClick
+
+点击左侧查询按钮事件,参数`paramItem`是返回一个对象参数，<br />
+`paramItem.leftOnevalue`(左侧第一个默认下拉列表的值)<br />
+`paramItem.leftTwovalue`(左侧第二个默认下拉列表的值)<br />
+`paramItem.menu.index`(右侧选中的tabs的index索引) 根据此索引可以查询信息<br >
+`paramItem.menu.code`(右侧tabs选项卡选中的名称)<br />
+`paramItem.item.index`(右侧选中的img的index索引) 根据此索引可以查询信息<br />
+`paramItem.item.code`(右侧当前选中图片的imgcode)<br />
+`paramItem.allChecked`(右侧选中的checkbox的imgcode列表) 方便在地图上打点<br />
+`paramItem.check.code`(右侧点击checkbox事件返回的参数code代表imgcode)<br />
+`paramItem.check.index`(右侧点击checkbox事件返回的参数index代表索引)<br />
+`paramItem.check.isCheck`(右侧点击checkbox事件返回的参数isCheck代表是否选中)<br />
+
+例如：
+```
+searchClick(paramItem){
+
+}
+```
+
+- listenTabsClick
+
+右侧tabs点击事件,参数`paramItem`是返回一个对象参数，<br />
+`paramItem.leftOnevalue`(左侧第一个默认下拉列表的值)<br />
+`paramItem.leftTwovalue`(左侧第二个默认下拉列表的值)<br />
+`paramItem.menu.index`(右侧选中的tabs的index索引) 根据此索引可以查询信息<br >
+`paramItem.menu.code`(右侧tabs选项卡选中的名称)<br />
+`paramItem.item.index`(右侧选中的img的index索引) 根据此索引可以查询信息<br />
+`paramItem.item.code`(右侧当前选中图片的imgcode)<br />
+`paramItem.allChecked`(右侧选中的checkbox的imgcode列表) 方便在地图上打点<br />
+`paramItem.check.code`(右侧点击checkbox事件返回的参数code代表imgcode)<br />
+`paramItem.check.index`(右侧点击checkbox事件返回的参数index代表索引)<br />
+`paramItem.check.isCheck`(右侧点击checkbox事件返回的参数isCheck代表是否选中)<br />
+例如：
+```
+tabsClick(paramItem){
+
+}
+```
+
+- listenRightImgClick
+右侧Img点击事件,参数`paramItem`是返回一个对象参数，<br />
+`paramItem.leftOnevalue`(左侧第一个默认下拉列表的值)<br />
+`paramItem.leftTwovalue`(左侧第二个默认下拉列表的值)<br />
+`paramItem.menu.index`(右侧选中的tabs的index索引) 根据此索引可以查询信息<br >
+`paramItem.menu.code`(右侧tabs选项卡选中的名称)<br />
+`paramItem.item.index`(右侧选中的img的index索引) 根据此索引可以查询信息<br />
+`paramItem.item.code`(右侧当前选中图片的imgcode)<br />
+`paramItem.allChecked`(右侧选中的checkbox的imgcode列表) 方便在地图上打点<br />
+`paramItem.check.code`(右侧点击checkbox事件返回的参数code代表imgcode)<br />
+`paramItem.check.index`(右侧点击checkbox事件返回的参数index代表索引)<br />
+`paramItem.check.isCheck`(右侧点击checkbox事件返回的参数isCheck代表是否选中)<br />
+例如：
+```
+rightImgClick(paramItem){
+
+}
+```
+
+- listenTableRowClick
+
+右侧table行的点击事件,参数`row` 是返回当前点击的行的数据<br />
+例如：
+```
+tableRowClick(row){
+
+}
+```
+
+- listenIconClick
+
+监听右侧图片上的Icon点击事件,参数`paramItem`是返回一个对象参数，<br />
+`paramItem.leftOnevalue`(左侧第一个默认下拉列表的值)<br />
+`paramItem.leftTwovalue`(左侧第二个默认下拉列表的值)<br />
+`paramItem.menu.index`(右侧选中的tabs的index索引) 根据此索引可以查询信息<br >
+`paramItem.menu.code`(右侧tabs选项卡选中的名称)<br />
+`paramItem.item.index`(右侧选中的img的index索引) 根据此索引可以查询信息<br />
+`paramItem.item.code`(右侧当前选中图片的imgcode)<br />
+`paramItem.allChecked`(右侧选中的checkbox的imgcode列表) 方便在地图上打点<br />
+`paramItem.check.code`(右侧点击checkbox事件返回的参数code代表imgcode)<br />
+`paramItem.check.index`(右侧点击checkbox事件返回的参数index代表索引)<br />
+`paramItem.check.isCheck`(右侧点击checkbox事件返回的参数isCheck代表是否选中)<br />
+例如:
+
+```
+iconClick(paramItem){
+
+}
+```
