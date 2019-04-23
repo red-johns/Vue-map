@@ -37,14 +37,13 @@ export default {
     //  { id: 'MapGJ', title: '界区域', layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_QHDMap/qhdNewMap/MapServer' },
     //{ id: 'GoogleMapLayer_JT', title: '卫星图', layerType: 'GoogleMapTileLayer', initVisible: false, opacity: 1, restURL: 'http://www.google.cn/maps/vt/lyrs=m@186000000&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}' },
     //{ id: "TiandituLayer_ID", title: "天地图", layerType: "TiandituWMTSLayer", initVisible: false, opacity: 1, restURL: "http://t0.tianditu.cn/DataServer?T=vec_c&X={x}&Y={y}&L={z}" },
-    { id: "TiandituLayer_ID", title: "地形图", layerType: "GoogleMapTileLayer", initVisible: false, opacity: 1, restURL: "http://www.google.cn/maps/vt/lyrs=t@129,r@186000000&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}" },
+     { id: "TiandituLayer_ID", title: "地形图", layerType: "GoogleMapTileLayer", initVisible: false, opacity: 1, restURL: "http://www.google.cn/maps/vt/lyrs=t@129,r@186000000&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}" },
     // { id: "layerMapGoogleJT", title: "交通图", layerType: "WebTileLayer", initVisible: false, opacity: 1, restURL: "http://10.13.178.54/GoogleChinaMap/m@216000000/L{level}/COL{col}/{row}.png" }
-    { id: "layerMapGoogleJT", title: "交通图", layerType: "WebTileLayer", initVisible: true, opacity: 1, restURL: "http://192.168.0.30/GoogleChinaMap/m@216000000/L{level}/COL{col}/{row}.png" }
-
+     { id: "layerMapGoogleJT", title: "交通图", layerType: "WebTileLayer", initVisible: true, opacity: 1, restURL: "http://192.168.0.30/GoogleChinaMap/m@216000000/L{level}/COL{col}/{row}.png" }
 
   ],
   CustomerLayers: [
-    { id: 'addvcd', title: '行政区划', groupbyName: "行政区划", position: true, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_QHDMap/qhdNewMap/MapServer' },
+    // { id: 'addvcd', title: '行政区划', groupbyName: "行政区划", position: true, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_QHDMap/qhdNewMap/MapServer' },
     // { id: 'MapGJ', title: '界区域', layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://10.13.178.54:6080/arcgis/rest/services/QhdMap/MapServer' },
     // { id: 'river', title: '流域河流', groupbyName: "流域河流", position: false, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_QHDMap/qhdNewMap/MapServer' },
     // //{ id: 'GoogleMapLayer_JT', title: '卫星图', layerType: 'GoogleMapTileLayer', initVisible: false, opacity: 1, restURL: 'http://www.google.cn/maps/vt/lyrs=m@186000000&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}' },
@@ -52,11 +51,12 @@ export default {
     // { id: "TiandituLayer_ID", title: "地形图", layerType: "GoogleMapTileLayer", initVisible: false, opacity: 1, restURL: "http://www.google.cn/maps/vt/lyrs=t@129,r@186000000&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}" },
     // // { id: "layerMapGoogleJT", title: "交通图", layerType: "WebTileLayer", initVisible: false, opacity: 1, restURL: "http://10.13.178.54/GoogleChinaMap/m@216000000/L{level}/COL{col}/{row}.png" }
     // { id: "layerMapGoogleJT", title: "交通图", layerType: "WebTileLayer", initVisible: true, opacity: 1, restURL: "http://192.168.0.30/GoogleChinaMap/m@216000000/L{level}/COL{col}/{row}.png" }
-    { id: 'water', title: '水利工程', groupbyName: "水利工程", position: false, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_GXMap/GXSMAP_ANN/MapServer' },
-    { id: 'station', title: '测站', groupbyName: "测站", position: false, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_GXMap/GXSMAP_ANN/MapServer' }
-
+    //{ id: 'water', title: '水利工程', groupbyName: "水利工程", position: false, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_GXMap/GXSMAP_ANN/MapServer' },
+    // { id: 'station', title: '测站', groupbyName: "测站", position: false, layerType: 'MapImageLayer', initVisible: true, opacity: 1, restURL: 'http://192.168.0.24:6080/arcgis/rest/services/ZHSL_GXMap/GXSMAP_ANN/MapServer' }
+    // { id: 'Td', title: '测站', groupbyName: "测站", position: false, layerType: 'KMLLayer', initVisible: true, opacity: 1, restURL: 'http://116.62.239.30:8061/guanqu0319_MapToKML1.kmz' }
   ],
   ElevationLayers: [
+    // { id: 'TiandituLayer_ID', title: '测站', groupbyName: "测站", position: false, layerType: 'KMLLayer', initVisible: true, opacity: 1, restURL: 'http://116.62.239.30:8061/guanqu0319_MapToKML1.kmz' }
     // { id: "layerMapgc", title: "高程图", layerType: "ElevationLayer", initVisible: true, opacity: 1, minScale: 30000000, maxScale: 1000, restURL: "http://192.168.0.189:6080/arcgis/rest/services/ChinaElevation/ImageServer" }
   ],
   BusinessLayers: [
@@ -83,6 +83,6 @@ export default {
     { component: 'Position', initVisible: true },//输入经纬度定位
     { component: 'LayerSelect', initVisible: true },//图层选择
     { component: 'BaseLayerList', initVisible: true },//地图列表
-    { component: 'LegendList', initVisible: true }//图例
+    { component: 'LegendList', initVisible: true, singleton:true }//图例
   ]
 }

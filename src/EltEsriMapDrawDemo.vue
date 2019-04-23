@@ -39,6 +39,8 @@
       <button v-on:click="cleanXian">清除线图层和图例</button>
       <br>
       <br>
+      <button v-on:click="addgeoJson"> 添加geoJson数据格式图层</button>
+      <button v-on:click="cleangeoJson"> 清除geoJson数据格式图层</button>
     </div>
   </div>
 </template>
@@ -47,6 +49,7 @@
 import data from "./test.json";
 // 导入地图配置
 import mapConfig from "./mapConfig.js";
+import geoJson from "./geoJson.json";
 // import cntyFeatures from "../../static/js/cntyFeatures.js";
 // export default {
 //   data() {
@@ -446,7 +449,7 @@ export default {
           spatialReference: 4326
         },
         color: "#000000",
-        width: 2
+        width: 3
       },
       //线描述样式
       polylineLevelLayerStyle: {
@@ -505,7 +508,7 @@ export default {
         fillSymbol: {
           type: "simple-fill",
           outline: {
-            width: "1",
+            width: 1,
             opacity: 0.75
           }
         }
@@ -513,7 +516,8 @@ export default {
       polylineList: data.PathList, //线图层数据
       polygonList: data.PathList, //面图层数据
       mapConfig: mapConfig,
-      index: 0
+      index: 0,
+      geoJson:geoJson //getJson的数据格式
     };
   },
   methods: {
@@ -649,15 +653,21 @@ export default {
     cleanPoint() {
       //输入图层id,清除图层图例也会清空
       this.elitelMap.CleanLayer("id_icon_river_station");
+      this.elitelMap.CleanLayer("id_name_river_station");
+      this.elitelMap.CleanLayer("id_desc_river_station");
+      this.elitelMap.CleanLayer("id_desc_dyke_water");
     },
     addMianFun() {
+      console.log(this.data);
       this.elitelMap.CreateGraphicsLayer(
         "GraphicsLayer",
         "Polygon",
         this.data,
         this.polygonLayerStyle,
         true,
-        { id: "id_icon_one_river", title: "一级河流" }
+        { id: "id_icon_one_river", title: "一级河流" },
+        "",
+        3
       );
     },
     mianShowFun() {
@@ -703,7 +713,9 @@ export default {
         this.data,
         this.polylineLayerStyle,
         true,
-        { id: "id_icon_dyke_water", title: "堤防" }
+        { id: "id_icon_dyke_water", title: "堤防" },
+        "",
+        10
       );
     },
     showLegendListFun() {
@@ -711,6 +723,47 @@ export default {
     },
     hideLegendListFun() {
       this.elitelMap.hideLegendList();
+    },
+    addgeoJson(){
+
+      //自定义样式
+      let levelList = [
+                {levelName:'0.1',title:'0.1-0.2',levelColor:'#FF00FF'},
+                {levelName:'1.1',title:'1.1-1.2',levelColor:'rgba(226,138,34,0.5)'},
+                {levelName:'200',title:'200-210',levelColor:'#000000'}
+      ];
+      let geoLayerStyle = {
+        groupByName:"图例",
+        level: levelList,
+        levelNotShow: "-999", //等级为-999是不绘制面
+        levelDefultColor: "rgba(255,255,255,0)", //默认显示的颜色
+        polygonStyle: {
+          type: "polygon",
+          rings: [],
+          spatialReference: 4326
+        },
+        fillSymbol: {
+          type: "simple-fill",
+          outline: {
+            width: "1",
+            opacity: 0.75
+          }
+        }
+      };
+      // 添加geoJson数据格式的图层
+      // @param data 数据
+      // @param isvisible 是否显示图层
+      // @param param 图层的属性，{id:"图层id",title:"图层名称"}
+      // @param polygonLayerStyle 可选参数的自定义图层样式，如果不传，使用默认样式
+      // @param index 可选的图层顺序
+      this.elitelMap.CreateGraphicsGeoLayer(
+                this.geoJson,
+                true,
+                { id: "id_geojsonictation", title: "河道水文站1" }
+            );
+    },
+    cleangeoJson(){
+      this.elitelMap.CleanLayer("id_geojsonictation");
     }
   },
   mounted() {}
