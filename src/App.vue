@@ -80,7 +80,8 @@ export default {
     },
     tabChange(tabName,index) {
       this.activedName = tabName;
-      this.addLayler(this.tabs[index].code);
+      if(this.tabs.length > index)
+        this.addLayler(this.tabs[index].code);
     },
     btnsClick(name,index) {
       switch (name) {
@@ -102,7 +103,7 @@ export default {
           break;
       }
 
-      console.log(this.result);
+      // console.log(this.result);
     },
     getData(code){
         //模拟查询数据

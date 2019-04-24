@@ -4,6 +4,7 @@ import EltContext from '@/EltContext'
 import EltEsriMapSlt from '@/EltEsriMapSltDemo'
 import EltSelector from '@/App'
 import EltEsriMapDraw from '@/EltEsriMapDrawDemo'
+import CustomEsriMap from '@/CustomEsriMap'
 
 Vue.use(Router)
 
@@ -24,5 +25,9 @@ export default new Router({
         path: '/eltesri',
         name: 'EltEsriMapDraw',
         component: EltEsriMapDraw
+    },{
+        path: '/customesri',
+        name: 'CustomEsriMap',
+        component: CustomEsriMap
     }]
 })

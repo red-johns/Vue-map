@@ -658,7 +658,6 @@ export default {
       this.elitelMap.CleanLayer("id_desc_dyke_water");
     },
     addMianFun() {
-      console.log(this.data);
       this.elitelMap.CreateGraphicsLayer(
         "GraphicsLayer",
         "Polygon",
@@ -761,6 +760,8 @@ export default {
                 true,
                 { id: "id_geojsonictation", title: "河道水文站1" }
             );
+    // console.log(this.elitelMap.LegendList);
+      
     },
     cleangeoJson(){
       this.elitelMap.CleanLayer("id_geojsonictation");

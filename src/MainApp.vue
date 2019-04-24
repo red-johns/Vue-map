@@ -34,6 +34,12 @@
                             <router-link to="/eltesri">EsriMapDraw组件</router-link>
                         </span>
                     </el-menu-item>
+                    <el-menu-item index="5">
+                        <i class="el-icon-edit-outline"></i>
+                        <span slot="title">
+                            <router-link to="/customesri">自定义EsriMap图层</router-link>
+                        </span>
+                    </el-menu-item>
                 </el-menu>
             </el-col>
         </el-aside>
@@ -46,10 +52,10 @@
 export default {
      methods: {
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
+        
       },
       handleClose(key, keyPath) {
-        console.log(key, keyPath);
+        
       }
     }
 }
